@@ -114,13 +114,22 @@ handler_swi_stub:
     // r1 now contains pointer to stacked registers
 
     // disable interrupts (nesting)
-    cpsid if
+    //cpsid if
     bl handler_swi
-    cpsie if
+    //cpsie if
 
     LDMFD   sp!, {r0, r3}          // Get spsr from stack
     MSR     SPSR_cxsf, r0          // Restore spsr
     LDMFD   sp!, {r0-r3, r12, pc}^ // Restore registers and return
+
+// r0: sp
+// r1: pc
+// r2: cpsr
+.global kickstart
+kickstart:
+    MSR     cpsr, r2          // Restore spsr
+    mov     sp, r0
+    mov     pc, r1
 
 .size _start, . - _start
 

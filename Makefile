@@ -3,14 +3,17 @@ all: start.bin
 _start.o: _start.s gic.s
 	arm-none-eabi-as -mcpu=cortex-a15 -g _start.s gic.s -o _start.o
 
+task.o: task.c
+	arm-none-eabi-gcc -ffreestanding -c -mcpu=cortex-a15 -g task.c -o task.o
+
 uart.o: uart.c
 	arm-none-eabi-gcc -ffreestanding -c -mcpu=cortex-a15 -g uart.c -o uart.o
 
 start.o: start.c
 	arm-none-eabi-gcc -ffreestanding -c -mcpu=cortex-a15 -g start.c -o start.o
 
-start.elf: start.o _start.o uart.o
-	arm-none-eabi-ld -T start.ld start.o _start.o uart.o -o start.elf
+start.elf: start.o _start.o uart.o task.o
+	arm-none-eabi-ld -T start.ld start.o _start.o uart.o task.o -o start.elf
 
 start.bin: start.elf
 	arm-none-eabi-objcopy -O binary start.elf start.bin

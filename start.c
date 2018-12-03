@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "start.h"
 #include "uart.h"
+#include "task.h"
 
 /* enable IRQ interrupts */
 void enable_interrupts (void)
@@ -50,7 +51,14 @@ static inline void get_cbar(unsigned long *cbar) {
 
 
 void start() {
+   for(int i=0; i<4; ++i)
+      create_task();
+
+   enable_interrupts();
+
    print_uart0("hello world\n");
+
+   start_task(0);
    // software interrupt
    asm("swi #0x42;");
    print_uart0("bb world\n");
@@ -75,13 +83,17 @@ void handler_pa() {
    print_uart0("handler_pa\n");
 }
 
-void handler_swi(int id) {
+void handler_swi(int id, unsigned int* regs) {
    print_uart0("handler_swi\n");
    print_hex(id);
 
    if(id == 0x42) {
    // trigger new software interrupt
       asm("swi #0x43;");
+   }
+   if(id == 0x44) {
+      int task_id = regs[0];
+      kickstart(tasks[task_id].regs[13], tasks[task_id].regs[15], tasks[task_id].regs[16]);
    }
 }
 

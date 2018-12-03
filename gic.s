@@ -40,14 +40,14 @@ get_gic_base:
 config_interrupt:
     stmfd sp!,{r4-r5, lr}
 
-    // Cinfigure the distributor interrupt set-enable registers (ICDISERn)
+    // Configure the distributor interrupt set-enable registers (ICDISERn)
     // enable the intterupt
     // reg_offset = (M/32)*4 (shift and clear some bits)
     // value = 1 << (N mod 32);
     ldr r2,=GIC_dist_base
     ldr r2,[r2] // Read GIC distributor base address
     add r2,r2,#ICDISER // r2 <- base address of ICDSER regs
-    lsr r4,r0,#3 // clculate reg_offset
+    lsr r4,r0,#3 // calculate reg_offset
     bic r4,r4,#3 // r4 <- reg_offset
     add r4,r2,r4 // r4 <- address of ICDISERn
 
