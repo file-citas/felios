@@ -127,9 +127,9 @@ handler_swi_stub:
 // r2: cpsr
 .global kickstart
 kickstart:
-    MSR     cpsr, r2          // Restore spsr
+    MSR     SPSR_cxsf, r2          // Restore spsr
     mov     sp, r0
-    mov     pc, r1
+    movs    pc, r1
 
 .size _start, . - _start
 

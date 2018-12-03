@@ -20,7 +20,7 @@ void task_func0(void)
    c_task++;
    if(c_task==4)
       c_task = 0;
-   start_task(c_task);
+   //start_task(c_task);
 }
 
 /*
